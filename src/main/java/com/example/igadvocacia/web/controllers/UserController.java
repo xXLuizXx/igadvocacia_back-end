@@ -6,6 +6,7 @@ import com.example.igadvocacia.web.dtos.UserCreateDTO;
 import com.example.igadvocacia.web.dtos.UserPasswordDTO;
 import com.example.igadvocacia.web.dtos.UserResponseDTO;
 import com.example.igadvocacia.web.dtos.mapper.UserMapper;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody UserCreateDTO userCreateDTO){
+    public ResponseEntity<UserResponseDTO> create(@Valid @RequestBody UserCreateDTO userCreateDTO){
         User criarUsuario = userService.saveUser(UserMapper.toUser(userCreateDTO));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(UserMapper.toDTO(criarUsuario));
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @RequestBody UserPasswordDTO dto){
+    public ResponseEntity<Void> updatePassword(@PathVariable Long id, @Valid @RequestBody UserPasswordDTO dto){
         User userUpdadePassword= userService.editarSenha(id, dto.getPasswordUser(), dto.getNewPasswordUser(), dto.getConfirmPasswordUser());
 
         return ResponseEntity.noContent().build();
