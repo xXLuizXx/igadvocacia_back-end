@@ -1,6 +1,7 @@
 package com.example.igadvocacia.services;
 
 import com.example.igadvocacia.entities.User;
+import com.example.igadvocacia.exeption.UserUniqueViolation;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,11 @@ public class UserService {
 
     @Transactional
     public User saveUser(User user) {
-        return userRespository.save(user);
+        try {
+            return userRespository.save(user);
+        }catch (org.springframework.dao.DataIntegrityViolationException ex){
+            throw new UserUniqueViolation(String.format("O usuário {%s} já está cadastrado", user.getEmailUser()));
+        }
     }
 
     @Transactional(readOnly = true)
